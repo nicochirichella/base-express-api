@@ -1,10 +1,10 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import config from "./config";
 import routeExample from "./routes/route-example";
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
@@ -17,6 +17,6 @@ app.get("/", function (req: Request, res: Response) {
 
 app.use("/route-example", routeExample);
 
-app.listen(port, () => {
-  console.log(`Application is running on port ${port}.`);
+app.listen(config.PORT, () => {
+  console.log(`Application is running on port ${config.PORT}.`);
 });

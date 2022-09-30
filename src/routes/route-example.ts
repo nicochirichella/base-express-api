@@ -1,16 +1,32 @@
 import { Router, Request, Response } from "express";
+import exampleMiddleware from "../middlewares/example";
+import exampleController from "../controllers/example";
+import logger from "../logger";
 
 const router = Router();
 
-router.get("/", (req: Request, res: Response) => {
-  res.status(200).send("getting route-example");
-});
+router.get("/", exampleGet);
+router.post("/", exampleMiddleware, examplePost);
 
-router.post("/", (req: Request, res: Response) => {
-  console.log("body", req.body);
-  console.log("query", req.query);
-  console.log("params", req.params);
-  res.status(200).send("posting route-example");
-});
+async function examplePost(req: Request, res: Response) {
+  try {
+    const { exampleField } = req.body;
+    const response = await exampleController.exampleMethod(exampleField);
+    res.status(201).send(response);
+  } catch (err: any) {
+    logger.error(err.message);
+    res.status(500).send({ message: err.message });
+  }
+}
+
+async function exampleGet(req: Request, res: Response) {
+  try {
+    const response = await exampleController.exampleGet();
+    res.status(200).send(response);
+  } catch (err: any) {
+    logger.error(err.message);
+    res.status(500).send({ message: err.message });
+  }
+}
 
 export default router;
